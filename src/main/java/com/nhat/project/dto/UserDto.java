@@ -1,4 +1,4 @@
-package com.nhat.project.dtomodel;
+package com.nhat.project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

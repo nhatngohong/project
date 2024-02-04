@@ -24,6 +24,8 @@ public class CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private UpvoteCommentRepository upvoteCommentRepository;
+    private static final int UPVOTE = 1;
+    private static final int DOWNVOTE = -1;
     public void reply(String content, User owner, Post post){
         Comment newComment = new Comment();
         newComment.setContent(content);
@@ -54,18 +56,25 @@ public class CommentService {
         }
     }
     public void upvote(int id, User user,int vote) {
-        if (vote != 1 && vote != -1) {
-            throw new NotValidOperationException("Vote must be 1 or -1 ");
+        if (vote != UPVOTE && vote != DOWNVOTE) {
+            throw new NotValidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }
         UpvoteComment upvoteComment = upvoteCommentRepository.findByUpvoteCommentId(new UpvoteCommentId(user.getId(),id));
         Comment comment =  commentRepository.findById(id);
         if (upvoteComment == null){
             comment.setUpvote(comment.getUpvote() + vote);
-            upvoteCommentRepository.save(new UpvoteComment(user,comment));
+            upvoteCommentRepository.save(new UpvoteComment(user,comment,vote));
         }
         else {
-            comment.setUpvote(comment.getUpvote() - vote);
-            upvoteCommentRepository.delete(upvoteComment);
+            if (upvoteComment.getVote() == vote){
+                comment.setUpvote(comment.getUpvote() - vote);
+                upvoteCommentRepository.delete(upvoteComment);
+            }
+            else {
+                comment.setUpvote(comment.getUpvote() + 2 * vote);
+                upvoteComment.setVote(-upvoteComment.getVote());
+                upvoteCommentRepository.save(upvoteComment);
+            }
         }
     }
 }

@@ -23,13 +23,14 @@ public class PostService {
     private CommentRepository commentRepository;
     @Autowired
     private UpvotePostRepository upvotePostRepository;
-
+    private static final int UPVOTE = 1;
+    private static final int DOWNVOTE = -1;
     public void newPost(String content, String title, User user){
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
         post.setOwner(user);
-        post.setVote(0);
+        post.setUpvote(0);
         postRepository.save(post);
         //TODO fix createDate
     }
@@ -55,18 +56,25 @@ public class PostService {
         }
     }
     public void upvote(int id, User user, int vote){
-        if (vote != 1 && vote != -1) {
-            throw new NotValidOperationException("Vote must be 1 or -1 ");
+        if (vote != UPVOTE && vote != DOWNVOTE) {
+            throw new NotValidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }
         UpvotePost upvotePost = upvotePostRepository.findByUpvotePostId(new UpvotePostId(user.getId(), id));
         Post post = postRepository.findById(id);
         if (upvotePost == null) {
-            post.setVote(post.getVote() + vote);
-            upvotePostRepository.save(new UpvotePost(user,post));
+            post.setUpvote(post.getUpvote() + vote);
+            upvotePostRepository.save(new UpvotePost(user,post,vote));
         }
         else {
-            post.setVote(post.getVote() - vote);
-            upvotePostRepository.delete(upvotePost);
+            if (upvotePost.getVote() == vote){
+                post.setUpvote(post.getUpvote() - vote);
+                upvotePostRepository.delete(upvotePost);
+            }
+            else {
+                post.setUpvote(post.getUpvote() + 2 * vote);
+                upvotePost.setVote(-upvotePost.getVote());
+                upvotePostRepository.save(upvotePost);
+            }
         }
     }
 }

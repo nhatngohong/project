@@ -23,4 +23,5 @@ public class UpvotePost {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    private int vote;
 }

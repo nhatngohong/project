@@ -1,8 +1,5 @@
 package com.nhat.project.controller;
 
-import com.nhat.project.dtomodel.CommentDto;
-import com.nhat.project.entity.Comment;
-import com.nhat.project.service.CommentService;
 import com.nhat.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -25,13 +26,15 @@ public class Post {
 
     private String content;
 
+    private int upvote;
+
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @CreationTimestamp
     private LocalDateTime createDate;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 
     @ManyToOne
@@ -41,5 +44,4 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<UpvotePost> upvotesPost;
 
-    private int vote;
 }

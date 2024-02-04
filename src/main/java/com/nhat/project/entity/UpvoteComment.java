@@ -24,4 +24,6 @@ public class UpvoteComment {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    private int vote;
+
 }

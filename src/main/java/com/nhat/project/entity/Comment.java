@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Comment {
     @CreationTimestamp
     private LocalDateTime createDate;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 
     @ManyToOne
@@ -42,7 +43,5 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment")
     private List<UpvoteComment> upvotesComment;
-
-    private int vote;
 
 }
