@@ -31,6 +31,7 @@ public class CommentService {
         newComment.setOwner(owner);
         newComment.setPost(post);
         commentRepository.save(newComment);
+        //TODO fix createDate
     }
     public void delete(int id, User owner) {
         Comment comment = commentRepository.findById(id);
@@ -40,7 +41,7 @@ public class CommentService {
         else{
             throw new NotOwnerException("You can not edit this comment");
         }
-        //TODO fix
+        //TODO fix updateDate
     }
     public void edit(int id, User owner, String content) {
         Comment comment = commentRepository.findById(id);
@@ -51,7 +52,6 @@ public class CommentService {
         else {
             throw new NotOwnerException("You can not edit this comment");
         }
-        //TODO fix
     }
     public void upvote(int id, User user,int vote) {
         if (vote != 1 && vote != -1) {
