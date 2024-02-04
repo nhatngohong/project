@@ -31,6 +31,9 @@ public class Post {
     @CreationTimestamp
     private LocalDateTime createDate;
 
+    @CreationTimestamp
+    private LocalDateTime updateDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;

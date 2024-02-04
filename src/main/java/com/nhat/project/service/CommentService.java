@@ -1,5 +1,6 @@
 package com.nhat.project.service;
 
+import com.nhat.project.entity.Post;
 import com.nhat.project.entity.UpvoteComment;
 import com.nhat.project.entity.id.UpvoteCommentId;
 import com.nhat.project.exception.NotOwnerException;
@@ -23,14 +24,15 @@ public class CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private UpvoteCommentRepository upvoteCommentRepository;
-    public void reply(String content, User owner){
+    public void reply(String content, User owner, Post post){
         Comment newComment = new Comment();
         newComment.setContent(content);
         newComment.setUpvote(0);
         newComment.setOwner(owner);
+        newComment.setPost(post);
         commentRepository.save(newComment);
     }
-    public void delete(int id, User owner) throws NotOwnerException{
+    public void delete(int id, User owner) {
         Comment comment = commentRepository.findById(id);
         if (comment.getOwner() == owner){
             commentRepository.deleteById(id);

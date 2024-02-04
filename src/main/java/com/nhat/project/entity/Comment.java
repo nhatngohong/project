@@ -29,6 +29,9 @@ public class Comment {
     @CreationTimestamp
     private LocalDateTime createDate;
 
+    @CreationTimestamp
+    private LocalDateTime updateDate;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
