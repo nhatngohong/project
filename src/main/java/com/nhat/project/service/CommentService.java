@@ -1,16 +1,17 @@
 package com.nhat.project.service;
 
-import com.nhat.project.Exception.NotOwnerException;
-import com.nhat.project.dtomodel.UserDto;
+import com.nhat.project.entity.UpvoteComment;
+import com.nhat.project.entity.id.UpvoteCommentId;
+import com.nhat.project.exception.NotOwnerException;
 import com.nhat.project.entity.Comment;
 import com.nhat.project.entity.User;
+import com.nhat.project.exception.NotValidOperationException;
 import com.nhat.project.repository.CommentRepository;
 import com.nhat.project.repository.PostRepository;
+import com.nhat.project.repository.UpvoteCommentRepository;
 import com.nhat.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -20,6 +21,8 @@ public class CommentService {
     private PostRepository postRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UpvoteCommentRepository upvoteCommentRepository;
     public void reply(String content, User owner){
         Comment newComment = new Comment();
         newComment.setContent(content);
@@ -32,22 +35,35 @@ public class CommentService {
         if (comment.getOwner() == owner){
             commentRepository.deleteById(id);
         }
-        else
+        else{
+            throw new NotOwnerException("You can not edit this comment");
+        }
         //TODO fix
     }
-    public void edit(int id, User owner, String content) throws NotOwnerException {
+    public void edit(int id, User owner, String content) {
         Comment comment = commentRepository.findById(id);
         if (comment.getOwner() == owner){
             comment.setContent(content);
             commentRepository.save(comment);
         }
         else {
-            throw NotOwnerException;
+            throw new NotOwnerException("You can not edit this comment");
         }
         //TODO fix
     }
-    public void upvote(int id, User user) throws NotOwnerException{
-        Comment comment = commentRepository.findById(id);
-
+    public void upvote(int id, User user,int vote) {
+        if (vote != 1 && vote != -1) {
+            throw new NotValidOperationException("Vote must be 1 or -1 ");
+        }
+        UpvoteComment upvoteComment = upvoteCommentRepository.findByUpvoteCommentId(new UpvoteCommentId(user.getId(),id));
+        Comment comment =  commentRepository.findById(id);
+        if (upvoteComment == null){
+            comment.setUpvote(comment.getUpvote() + vote);
+            upvoteCommentRepository.save(new UpvoteComment(user,comment));
+        }
+        else {
+            comment.setUpvote(comment.getUpvote() - vote);
+            upvoteCommentRepository.delete(upvoteComment);
+        }
     }
 }

@@ -1,29 +1,26 @@
 package com.nhat.project.entity;
 
-import com.nhat.project.entity.id.UpvoteId;
+import com.nhat.project.entity.id.UpvotePostId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "upvote")
-@IdClass(UpvoteId.class)
+@Table(name = "upvote_post")
+@IdClass(UpvotePostId.class)
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class Upvote {
-
+public class UpvotePost {
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Id
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-
-    private int vote;
 
 }

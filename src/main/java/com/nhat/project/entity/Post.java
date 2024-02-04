@@ -15,18 +15,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
+
     private String title;
+
     private String content;
+
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
     @CreationTimestamp
     private LocalDateTime createDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User owner;
-//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinTable()
+
+    @OneToMany(mappedBy = "post")
+    private List<UpvotePost> upvotesPost;
+
+    private int vote;
 }
