@@ -1,5 +1,7 @@
 package com.nhat.project.controller;
 
+import com.nhat.project.service.CommentService;
+import com.nhat.project.service.PostService;
 import com.nhat.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +13,9 @@ public class MainController {
     @Autowired
     private UserService userService;
     @Autowired
-    private PostController postController;
+    private PostService postService;
     @Autowired
-    private CommentController commentController;
+    private CommentService commentService;
     @GetMapping("/")
     public String home(){
         return "home";
@@ -30,8 +32,5 @@ public class MainController {
     private String posts(){
         return "user";
     }
-    @GetMapping("/comments")
-    private String comments(){
-        return "comments";
-    }
+    
 }

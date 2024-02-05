@@ -12,6 +12,8 @@ import com.nhat.project.repository.PostRepository;
 import com.nhat.project.repository.UpvoteCommentRepository;
 import com.nhat.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,19 +35,17 @@ public class CommentService {
         newComment.setOwner(owner);
         newComment.setPost(post);
         commentRepository.save(newComment);
-        //TODO fix createDate
     }
-    public void delete(int id, User owner) {
+    public void delete(int id, User owner) throws NotOwnerException{
         Comment comment = commentRepository.findById(id);
         if (comment.getOwner() == owner){
             commentRepository.deleteById(id);
         }
         else{
-            throw new NotOwnerException("You can not edit this comment");
+            throw new NotOwnerException("you can not delete this comment");
         }
-        //TODO fix updateDate
     }
-    public void edit(int id, User owner, String content) {
+    public void edit(int id, User owner, String content) throws NotOwnerException{
         Comment comment = commentRepository.findById(id);
         if (comment.getOwner() == owner){
             comment.setContent(content);
@@ -55,7 +55,7 @@ public class CommentService {
             throw new NotOwnerException("You can not edit this comment");
         }
     }
-    public void upvote(int id, User user,int vote) {
+    public void upvote(int id, User user,int vote) throws NotValidOperationException{
         if (vote != UPVOTE && vote != DOWNVOTE) {
             throw new NotValidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }
@@ -76,5 +76,8 @@ public class CommentService {
                 upvoteCommentRepository.save(upvoteComment);
             }
         }
+    }
+    public Comment findById(int id){
+        return commentRepository.findById(id);
     }
 }

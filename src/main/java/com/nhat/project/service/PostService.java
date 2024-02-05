@@ -25,7 +25,7 @@ public class PostService {
     private UpvotePostRepository upvotePostRepository;
     private static final int UPVOTE = 1;
     private static final int DOWNVOTE = -1;
-    public void newPost(String content, String title, User user){
+    public void ask(String content, String title, User user){
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
@@ -35,7 +35,7 @@ public class PostService {
         //TODO fix createDate
     }
 
-    public void update(int id, String content, User user){
+    public void update(int id, String content, User user) throws NotOwnerException{
         Post post = postRepository.findById(id);
         if (post.getOwner() == user){
             post.setContent(content);
@@ -46,7 +46,7 @@ public class PostService {
         }
         //TODO fix updateDate
     }
-    public void delete(int id, User user){
+    public void delete(int id, User user) throws NotOwnerException{
         Post post = postRepository.findById(id);
         if (post.getOwner() == user){
             postRepository.delete(post);
@@ -55,7 +55,7 @@ public class PostService {
             throw new NotOwnerException("You can not delete this post");
         }
     }
-    public void upvote(int id, User user, int vote){
+    public void upvote(int id, User user, int vote) throws NotValidOperationException{
         if (vote != UPVOTE && vote != DOWNVOTE) {
             throw new NotValidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }
@@ -76,5 +76,8 @@ public class PostService {
                 upvotePostRepository.save(upvotePost);
             }
         }
+    }
+    public Post findById(int id){
+        return postRepository.findById(id);
     }
 }
