@@ -1,5 +1,6 @@
 package com.nhat.project.entity;
 
+import com.nhat.project.dto.PostDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 @Entity
-@Table(name = "post")
+@Table(name = "posts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class Post {
 
     private int upvote;
 
-    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @CreationTimestamp
@@ -43,5 +44,9 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<UpvotePost> upvotesPost;
+
+    public PostDto convertToDto(Post post){
+        return new PostDto(this.title,this.content,this.getOwner().convertToDto(), this.ge)
+    }
 
 }

@@ -1,17 +1,23 @@
 package com.nhat.project.service;
 
+import com.nhat.project.entity.Comment;
 import com.nhat.project.entity.Post;
 import com.nhat.project.entity.UpvotePost;
 import com.nhat.project.entity.User;
 import com.nhat.project.entity.id.UpvotePostId;
 import com.nhat.project.exception.NotOwnerException;
 import com.nhat.project.exception.NotValidOperationException;
+import com.nhat.project.exception.PostNotFoundException;
 import com.nhat.project.repository.CommentRepository;
 import com.nhat.project.repository.PostRepository;
 import com.nhat.project.repository.UpvotePostRepository;
 import com.nhat.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PostService {
@@ -77,7 +83,20 @@ public class PostService {
             }
         }
     }
-    public Post findById(int id){
+    public List<Post> showPostByUpvote(int page){
+        return postRepository.findAllByUpvote(PageRequest.of(page - 1, 5));
+    }
+    public List<Post> showPostByDate(int page){
+        return postRepository.findAllByDate(PageRequest.of(page - 1, 5));
+    }
+    public Post findById(int id) throws PostNotFoundException {
+        Post post = postRepository.findById(id);
+        if (post == null) throw new PostNotFoundException("Post not found");
         return postRepository.findById(id);
+    }
+
+    public List<Comment> showComment(int id){
+        List<Comment> comments = commentRepository.findByPost(id);
+        return comments;
     }
 }

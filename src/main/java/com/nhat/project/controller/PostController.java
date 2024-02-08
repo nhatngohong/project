@@ -1,9 +1,12 @@
 package com.nhat.project.controller;
 
 import com.nhat.project.dto.PostDto;
+import com.nhat.project.dto.UserDto;
+import com.nhat.project.entity.Post;
 import com.nhat.project.entity.User;
 import com.nhat.project.exception.NotOwnerException;
 import com.nhat.project.exception.NotValidOperationException;
+import com.nhat.project.exception.PostNotFoundException;
 import com.nhat.project.service.CommentService;
 import com.nhat.project.service.PostService;
 import com.nhat.project.service.UserService;
@@ -23,13 +26,14 @@ public class PostController {
     private CommentService commentService;
     @PostMapping("/ask")
     public ResponseEntity<?> ask(Authentication authentication,
-                              @RequestParam String title,
-                              @RequestParam String content){
+                              @RequestBody PostDto postDto){
+        String content = postDto.getContent();
+        String title = postDto.getTitle();
         String username = authentication.getName();
         User user = userService.findByUsername(username);
         postService.ask(content,title,user);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new PostDto(title,content,user)
+                new PostDto(title,content,user.convertToDto(),null)
         );
     }
     @DeleteMapping("/delete-post/{id}")
@@ -41,6 +45,7 @@ public class PostController {
         try{
             postService.delete(id,user);
             return ResponseEntity.status(HttpStatus.OK).body("Delete successfully");
+            //TODO fix
         }
         catch (NotOwnerException noe){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
@@ -56,23 +61,35 @@ public class PostController {
         try{
             postService.update(id,content,user);
             return ResponseEntity.status(HttpStatus.OK).body("Update successfully");
+            //TODO fix
         }
         catch (NotOwnerException noe){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
         }
     }
-    @PutMapping("/upvote-post/{id}")
-    public ResponseEntity<?> upvoteComment(Authentication authentication,
-                                @PathVariable int id,
-                                @PathVariable int vote){
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
+//    @PutMapping("/upvote-post/{id}")
+//    public ResponseEntity<?> upvoteComment(Authentication authentication,
+//                                @PathVariable int id,
+//                                @PathVariable int vote){
+//        String username = authentication.getName();
+//        User user = userService.findByUsername(username);
+//        try{
+//            postService.upvote(id,user,vote);
+//            return ResponseEntity.status(HttpStatus.OK).body("upvote successfully");
+//            //TODO fix
+//        }
+//        catch (NotValidOperationException nvoe){
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(nvoe);
+//        }
+//    }
+    @GetMapping("/posts/{id}")
+    public ResponseEntity<?> getPost(@PathVariable int id){
         try{
-            postService.upvote(id,user,vote);
-            return ResponseEntity.status(HttpStatus.OK).body("upvote successfully");
-        }
-        catch (NotValidOperationException nvoe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(nvoe);
+            Post post = postService.findById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(post);
+            //TODO fix
+        }catch (PostNotFoundException pnfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pnfe);
         }
     }
 }

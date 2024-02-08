@@ -2,6 +2,7 @@ package com.nhat.project.controller;
 
 import com.nhat.project.dto.CommentDto;
 import com.nhat.project.dto.ResponseDto;
+import com.nhat.project.dto.upvote.UpvoteCommentDto;
 import com.nhat.project.entity.Comment;
 import com.nhat.project.entity.Post;
 import com.nhat.project.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 @RestController
+@RequestMapping("comment")
 public class CommentController {
     @Autowired
     private UserService userService;
@@ -25,11 +27,11 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
     @PostMapping("/reply")
-    public ResponseEntity<?> reply(String content, Authentication authentication, int post_id) {
+    public ResponseEntity<?> reply(Authentication authentication, String content, int post_id) {
         String username = authentication.getName();
         commentService.reply(content, userService.findByUsername(username),postService.findById(post_id));
         return ResponseEntity.status(HttpStatus.OK).body(
-                new CommentDto(content,userService.findByUsername(username),postService.findById(post_id)));
+                new CommentDto(content,userService.findByUsername(username).convertToDto()));
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(Authentication authentication, @PathVariable int id){
@@ -40,7 +42,7 @@ public class CommentController {
         try{
             commentService.delete(id,userService.findByUsername(username));
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new CommentDto(comment.getContent(),user,post)
+                    new CommentDto(comment.getContent(),user.convertToDto())
             );
         }
         catch (NotOwnerException noe){
@@ -58,7 +60,7 @@ public class CommentController {
         try{
             commentService.edit(id,user,content);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new CommentDto(content,user,post)
+                    new CommentDto(content,user.convertToDto())
             );
         }
         catch (NotOwnerException noe){
@@ -76,7 +78,7 @@ public class CommentController {
         try{
             commentService.upvote(id,user,vote);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new CommentDto(comment.getContent(), user, post)
+                    new UpvoteCommentDto(comment.getContent(), vote)
             );
         }
         catch (NotValidOperationException nvoe){

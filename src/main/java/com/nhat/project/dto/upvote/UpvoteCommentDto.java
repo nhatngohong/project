@@ -1,7 +1,5 @@
-package com.nhat.project.dto;
+package com.nhat.project.dto.upvote;
 
-import com.nhat.project.entity.User;
-import com.nhat.project.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
+public class UpvoteCommentDto {
 
     private String content;
 
-    private UserDto user;
-
-
+    private int vote;
 }
