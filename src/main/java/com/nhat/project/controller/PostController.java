@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/post")
 public class PostController {
     @Autowired
     private UserService userService;
@@ -36,7 +37,7 @@ public class PostController {
                 new PostDto(title,content,user.convertToDto(),null)
         );
     }
-    @DeleteMapping("/delete-post/{id}")
+    @DeleteMapping("/delete/{id}")
     private ResponseEntity<?> deletePost(Authentication authentication,
                                               @PathVariable int id){
         String username = authentication.getName();
@@ -51,7 +52,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
         }
     }
-    @PutMapping("/update-post/{id}")
+    @PutMapping("/edit/{id}")
     private ResponseEntity<?> updatePost(Authentication authentication,
                                               @PathVariable int id,
                                               @RequestParam String content){
@@ -82,7 +83,7 @@ public class PostController {
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(nvoe);
 //        }
 //    }
-    @GetMapping("/posts/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable int id){
         try{
             Post post = postService.findById(id);

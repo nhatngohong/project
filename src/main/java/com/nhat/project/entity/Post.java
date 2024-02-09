@@ -44,9 +44,4 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     private List<UpvotePost> upvotesPost;
-
-    public PostDto convertToDto(Post post){
-        return new PostDto(this.title,this.content,this.getOwner().convertToDto(), this.ge)
-    }
-
 }
