@@ -1,4 +1,4 @@
-package com.nhat.project.dto;
+package com.nhat.project.dto.user;
 
 import com.nhat.project.entity.User;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+
+    private int id;
 
     private String username;
 

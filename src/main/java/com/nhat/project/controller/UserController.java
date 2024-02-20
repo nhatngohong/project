@@ -1,19 +1,19 @@
 package com.nhat.project.controller;
 
+import com.nhat.project.dto.post.PostShowDto;
+import com.nhat.project.dto.user.UserDto;
 import com.nhat.project.entity.Comment;
 import com.nhat.project.entity.Post;
+import com.nhat.project.exception.InvalidOperationException;
+import com.nhat.project.exception.not_found.UserNotFoundException;
 import com.nhat.project.service.CommentService;
 import com.nhat.project.service.PostService;
 import com.nhat.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,20 +26,26 @@ public class UserController {
     private PostService postService;
     @Autowired
     private CommentService commentService;
-    @GetMapping("/posts")
-    private ResponseEntity<?> showPosts(Authentication authentication,
-                                        int page){
-        String username = authentication.getName();
-        int id = userService.findByUsername(username).getId();
-        List<Post> posts = userService.showPost(page,id);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
+    @GetMapping("/posts/{id}")
+    private ResponseEntity<?> getUserPost(@PathVariable int id,
+                                          @RequestParam int page,
+                                          @RequestParam(defaultValue = "latest") String sortType){
+        try{
+            List<PostShowDto> postShowDtos = userService.getUserPost(id,page,sortType);
+            return ResponseEntity.status(HttpStatus.OK).body(postShowDtos);
+        }catch (InvalidOperationException invalidOperationException){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(invalidOperationException);
+        }
     }
-    @GetMapping("/comments")
-    private ResponseEntity<?> showComments(Authentication authentication,
-                                        int page){
-        String username = authentication.getName();
-        int id = userService.findByUsername(username).getId();
-        List<Comment> comments = userService.showComment(page, id);
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getInfo(Authentication authentication,
+                                     @PathVariable int id){
+        try{
+            UserDto info = userService.getInfo(authentication.getName(),id);
+            return ResponseEntity.status(HttpStatus.OK).body(info);
+        }
+        catch (UserNotFoundException userNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userNotFoundException);
+        }
     }
 }

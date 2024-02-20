@@ -1,19 +1,20 @@
 package com.nhat.project.service;
 
+import com.nhat.project.dto.comment.CommentDto;
+import com.nhat.project.dto.comment.CommentUpvoteDto;
 import com.nhat.project.entity.Post;
 import com.nhat.project.entity.UpvoteComment;
-import com.nhat.project.entity.id.UpvoteCommentId;
+import com.nhat.project.exception.not_found.CommentNotFoundException;
 import com.nhat.project.exception.NotOwnerException;
 import com.nhat.project.entity.Comment;
 import com.nhat.project.entity.User;
-import com.nhat.project.exception.NotValidOperationException;
+import com.nhat.project.exception.InvalidOperationException;
+import com.nhat.project.exception.not_found.PostNotFoundException;
 import com.nhat.project.repository.CommentRepository;
 import com.nhat.project.repository.PostRepository;
 import com.nhat.project.repository.UpvoteCommentRepository;
 import com.nhat.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,38 +29,54 @@ public class CommentService {
     private UpvoteCommentRepository upvoteCommentRepository;
     private static final int UPVOTE = 1;
     private static final int DOWNVOTE = -1;
-    public void reply(String content, User owner, Post post){
+    public CommentDto reply(String content, User owner, int id) throws PostNotFoundException{
         Comment newComment = new Comment();
+        Post post = postRepository.findById(id);
+
+        if (post == null) throw new PostNotFoundException("Post not found");
+
         newComment.setContent(content);
         newComment.setUpvote(0);
         newComment.setOwner(owner);
         newComment.setPost(post);
-        commentRepository.save(newComment);
+        Comment comment = commentRepository.save(newComment);
+        return comment.convertToDto();
     }
-    public void delete(int id, User owner) throws NotOwnerException{
+    public CommentDto delete(int id, User owner) throws NotOwnerException, CommentNotFoundException {
         Comment comment = commentRepository.findById(id);
+
+        if (comment == null) throw new CommentNotFoundException("Comment not found");
+
         if (comment.getOwner() == owner){
             commentRepository.deleteById(id);
+            return comment.convertToDto();
         }
         else{
             throw new NotOwnerException("you can not delete this comment");
         }
     }
-    public void edit(int id, User owner, String content) throws NotOwnerException{
+    public CommentDto edit(int id, User owner, String content) throws NotOwnerException, CommentNotFoundException{
         Comment comment = commentRepository.findById(id);
+
+        if (comment == null) throw new CommentNotFoundException("Comment not found");
+
         if (comment.getOwner() == owner){
             comment.setContent(content);
-            commentRepository.save(comment);
+            Comment res = commentRepository.save(comment);
+            return res.convertToDto();
         }
         else {
             throw new NotOwnerException("You can not edit this comment");
         }
     }
-    public void upvote(int id, User user,int vote) throws NotValidOperationException{
+    public CommentUpvoteDto upvote(int id, User user, int vote) throws InvalidOperationException, CommentNotFoundException{
         if (vote != UPVOTE && vote != DOWNVOTE) {
-            throw new NotValidOperationException("Vote must be UPVOTE or DOWNVOTE ");
+            throw new InvalidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }
-        UpvoteComment upvoteComment = upvoteCommentRepository.findByUpvoteCommentId(new UpvoteCommentId(user.getId(),id));
+
+        if (commentRepository.findById(id) == null) throw new CommentNotFoundException("Comment not found");
+
+        UpvoteComment upvoteComment = upvoteCommentRepository.findByUpvoteCommentId(user.getId(),id);
         Comment comment =  commentRepository.findById(id);
         if (upvoteComment == null){
             comment.setUpvote(comment.getUpvote() + vote);
@@ -76,6 +93,7 @@ public class CommentService {
                 upvoteCommentRepository.save(upvoteComment);
             }
         }
+        return new CommentUpvoteDto(comment.getId(),vote,comment.convertToDto());
     }
     public Comment findById(int id){
         return commentRepository.findById(id);

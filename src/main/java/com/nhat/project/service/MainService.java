@@ -24,9 +24,5 @@ public class MainService {
     @Autowired
     private UpvoteCommentRepository upvoteCommentRepository;
 
-    public List<Post> getPage(int page){
-        Pageable pageable = PageRequest.of(page - 1,10);
-        List<Post> posts = postRepository.findAllByUpvote(pageable);
-        return posts;
-    }
+
 }

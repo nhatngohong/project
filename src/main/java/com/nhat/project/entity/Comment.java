@@ -1,6 +1,6 @@
 package com.nhat.project.entity;
 
-import com.nhat.project.dto.CommentDto;
+import com.nhat.project.dto.comment.CommentDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,11 +42,10 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment_id")
     private List<UpvoteComment> upvotesComment;
 
-    public CommentDto convertToDto(Comment comment){
-        return new CommentDto(this.getContent(),this.owner.convertToDto());
+    public CommentDto convertToDto(){
+        return new CommentDto(this.id,this.upvote,this.getContent(),this.owner.convertToDto(),this.createDate,this.updateDate);
     }
-//    public List<CommentDto> convertToDto(List<Comment> comments){
 }

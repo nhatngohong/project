@@ -1,13 +1,12 @@
 package com.nhat.project.entity;
 
-import com.nhat.project.dto.UserDto;
+import com.nhat.project.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 @Entity
 @Table(name = "users")
@@ -36,14 +35,17 @@ public class User {
 
     private LocalDateTime createDate;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user_id")
     private List<UpvoteComment> upvotesComment;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user_id")
     private List<UpvotePost> upvotesPost;
 
     public UserDto convertToDto(){
-        return new UserDto(this.getUsername(),this.getContribution(),this.getCreateDate());
+        return new UserDto(this.id,this.getUsername(),this.getContribution(),this.getCreateDate());
+    }
+    public OwnerDto convertToOwner(){
+        return new OwnerDto(this.getId(), this.getUsername());
     }
 
 }

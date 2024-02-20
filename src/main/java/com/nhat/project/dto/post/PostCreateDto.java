@@ -1,19 +1,15 @@
-package com.nhat.project.dto;
+package com.nhat.project.dto.post;
 
-import com.nhat.project.entity.User;
-import com.nhat.project.entity.Post;
+import com.nhat.project.dto.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
-
+@NoArgsConstructor
+public class PostCreateDto {
+    private String title;
     private String content;
-
     private UserDto user;
-
-
 }

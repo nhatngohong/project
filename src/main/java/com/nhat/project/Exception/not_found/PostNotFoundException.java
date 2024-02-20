@@ -1,4 +1,4 @@
-package com.nhat.project.exception;
+package com.nhat.project.exception.not_found;
 
 import com.nhat.project.entity.Post;
 
