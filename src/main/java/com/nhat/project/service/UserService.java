@@ -47,14 +47,14 @@ public class UserService {
         List<Comment> comments = commentRepository.findByUser_id(id,pageable);
         return comments;
     }
-    public UserDto getInfo(String username, int id) throws UserNotFoundException{
+    public UserDto getInfo(String username, int id) {
         User user = userRepository.findById(id);
         if (user == null){
             throw new UserNotFoundException("User not found");
         }
         return new UserDto(user.getId(),username,user.getContribution(),user.getCreateDate());
     }
-    public List<PostShowDto> getUserPost(int id, int page, String sortType) throws InvalidOperationException {
+    public List<PostShowDto> getUserPost(int id, int page, String sortType)  {
         Pageable pageable = PageRequest.of(page,10);
         List<Post> posts = new ArrayList<>();
         List<PostShowDto> postShowDtos = new ArrayList<>();
@@ -66,7 +66,7 @@ public class UserService {
         }
         return postShowDtos;
     }
-    public void register(UserCreateDto userCreateDto) throws UsernameAlreadyTaken {
+    public void register(UserCreateDto userCreateDto)  {
         if (userRepository.findByUsername(userCreateDto.getUsername()) != null) throw new UsernameAlreadyTaken("Username already taken");
         User user = new User();
         user.setUsername(userCreateDto.getUsername());

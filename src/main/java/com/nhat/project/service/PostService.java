@@ -43,7 +43,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostUpdateDto update(int id, PostCreateDto postUpdateDto, User user) throws NotOwnerException, PostNotFoundException{
+    public PostUpdateDto update(int id, PostCreateDto postUpdateDto, User user) {
         Post post = postRepository.findById(id);
         if (post == null) throw new PostNotFoundException("Post not found");
         if (post.getOwner() == user){
@@ -58,7 +58,7 @@ public class PostService {
             throw new NotOwnerException("You can not edit thus post");
         }
     }
-    public PostDeleteDto delete(int id, User user) throws NotOwnerException, PostNotFoundException{
+    public PostDeleteDto delete(int id, User user){
         Post post = postRepository.findById(id);
 
         if (post == null) throw new PostNotFoundException("Post not found");
@@ -71,7 +71,7 @@ public class PostService {
             throw new NotOwnerException("You can not delete this post");
         }
     }
-    public PostUpvoteDto upvote(int id, User user, int vote) throws InvalidOperationException, PostNotFoundException{
+    public PostUpvoteDto upvote(int id, User user, int vote){
         if (vote != UPVOTE && vote != DOWNVOTE) {
             throw new InvalidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }
@@ -97,7 +97,7 @@ public class PostService {
         }
         return new PostUpvoteDto(id,vote,post.convertToDto());
     }
-    public PostDto getPost(int id, int page, String sortType) throws PostNotFoundException, InvalidOperationException {
+    public PostDto getPost(int id, int page, String sortType) {
         Post post = postRepository.findById(id);
 
         if (post == null) throw new PostNotFoundException("Post not found");
@@ -110,7 +110,6 @@ public class PostService {
         else comments = commentRepository.findByPostSortByUpvote(id,pageable);
         List<CommentDto> commentDtos = new ArrayList<>();
         for (Comment comment:comments){
-            System.out.println(comment.getContent());
             commentDtos.add(comment.convertToDto());
         }
 
@@ -133,7 +132,7 @@ public class PostService {
         }
         return postShowDtos;
     }
-    public List<PostShowDto> findPost(int page,String keyword,String sortType) throws InvalidOperationException{
+    public List<PostShowDto> searchPost(int page, String keyword, String sortType) {
 
         if (!Objects.equals(sortType, "latest") && !Objects.equals(sortType, "upvote")) throw new InvalidOperationException("Invalid sort type");
 

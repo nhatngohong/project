@@ -30,22 +30,13 @@ public class UserController {
     private ResponseEntity<?> getUserPost(@PathVariable int id,
                                           @RequestParam int page,
                                           @RequestParam(defaultValue = "latest") String sortType){
-        try{
-            List<PostShowDto> postShowDtos = userService.getUserPost(id,page,sortType);
-            return ResponseEntity.status(HttpStatus.OK).body(postShowDtos);
-        }catch (InvalidOperationException invalidOperationException){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(invalidOperationException);
-        }
+        List<PostShowDto> postShowDtos = userService.getUserPost(id,page,sortType);
+        return ResponseEntity.status(HttpStatus.OK).body(postShowDtos);
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getInfo(Authentication authentication,
                                      @PathVariable int id){
-        try{
-            UserDto info = userService.getInfo(authentication.getName(),id);
-            return ResponseEntity.status(HttpStatus.OK).body(info);
-        }
-        catch (UserNotFoundException userNotFoundException){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userNotFoundException);
-        }
+        UserDto info = userService.getInfo(authentication.getName(),id);
+        return ResponseEntity.status(HttpStatus.OK).body(info);
     }
 }

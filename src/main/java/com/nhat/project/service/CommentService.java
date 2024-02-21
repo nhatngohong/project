@@ -29,7 +29,7 @@ public class CommentService {
     private UpvoteCommentRepository upvoteCommentRepository;
     private static final int UPVOTE = 1;
     private static final int DOWNVOTE = -1;
-    public CommentDto reply(String content, User owner, int id) throws PostNotFoundException{
+    public CommentDto reply(String content, User owner, int id) {
         Comment newComment = new Comment();
         Post post = postRepository.findById(id);
 
@@ -42,7 +42,7 @@ public class CommentService {
         Comment comment = commentRepository.save(newComment);
         return comment.convertToDto();
     }
-    public CommentDto delete(int id, User owner) throws NotOwnerException, CommentNotFoundException {
+    public CommentDto delete(int id, User owner)  {
         Comment comment = commentRepository.findById(id);
 
         if (comment == null) throw new CommentNotFoundException("Comment not found");
@@ -55,7 +55,7 @@ public class CommentService {
             throw new NotOwnerException("you can not delete this comment");
         }
     }
-    public CommentDto edit(int id, User owner, String content) throws NotOwnerException, CommentNotFoundException{
+    public CommentDto edit(int id, User owner, String content) {
         Comment comment = commentRepository.findById(id);
 
         if (comment == null) throw new CommentNotFoundException("Comment not found");
@@ -69,7 +69,7 @@ public class CommentService {
             throw new NotOwnerException("You can not edit this comment");
         }
     }
-    public CommentUpvoteDto upvote(int id, User user, int vote) throws InvalidOperationException, CommentNotFoundException{
+    public CommentUpvoteDto upvote(int id, User user, int vote) {
         if (vote != UPVOTE && vote != DOWNVOTE) {
             throw new InvalidOperationException("Vote must be UPVOTE or DOWNVOTE ");
         }

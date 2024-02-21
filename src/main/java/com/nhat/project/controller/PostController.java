@@ -42,18 +42,9 @@ public class PostController {
                                               @PathVariable int id){
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-
-        try{
-            PostDeleteDto postDeleteDto = postService.delete(id,user);
-            return ResponseEntity.status(HttpStatus.OK).body(postDeleteDto);
-            //TODO fix
-        }
-        catch (NotOwnerException noe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
-        }
-        catch (PostNotFoundException pnfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pnfe);
-        }
+        PostDeleteDto postDeleteDto = postService.delete(id,user);
+        return ResponseEntity.status(HttpStatus.OK).body(postDeleteDto);
+        //TODO fix
     }
     @PutMapping("/edit/{id}")
     private ResponseEntity<?> updatePost(Authentication authentication,
@@ -62,17 +53,8 @@ public class PostController {
 
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-        try{
-            PostUpdateDto postUpdateDto1 = postService.update(id,postUpdateDto,user);
-            return ResponseEntity.status(HttpStatus.OK).body(postUpdateDto1);
-            //TODO fix
-        }
-        catch (NotOwnerException noe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
-        }
-        catch (PostNotFoundException pnfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pnfe);
-        }
+        PostUpdateDto postUpdateDto1 = postService.update(id,postUpdateDto,user);
+        return ResponseEntity.status(HttpStatus.OK).body(postUpdateDto1);
     }
     @PutMapping("/upvote/{id}")
     public ResponseEntity<?> upvote(Authentication authentication,
@@ -80,38 +62,21 @@ public class PostController {
                                 @RequestParam int vote){
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-        try{
-            PostUpvoteDto postUpvoteDto = postService.upvote(id,user,vote);
-            return ResponseEntity.status(HttpStatus.OK).body(postUpvoteDto);
-        } catch (InvalidOperationException nvoe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(nvoe);
-        } catch (PostNotFoundException pnfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pnfe);
-        }
+        PostUpvoteDto postUpvoteDto = postService.upvote(id,user,vote);
+        return ResponseEntity.status(HttpStatus.OK).body(postUpvoteDto);
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable int id,
                                      @RequestParam int page,
                                      @RequestParam(defaultValue = "latest") String sortType){
-        try{
-            PostDto postDto = postService.getPost(id,page,sortType);
-            return ResponseEntity.status(HttpStatus.OK).body(postDto);
-        }catch (PostNotFoundException pnfe){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pnfe);
-        }catch (InvalidOperationException invalidOperationException){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(invalidOperationException);
-        }
+        PostDto postDto = postService.getPost(id,page,sortType);
+        return ResponseEntity.status(HttpStatus.OK).body(postDto);
     }
-    @GetMapping("/find")
-    public ResponseEntity<?> findPost(@RequestParam int page,
-                                      @RequestParam(required = true) String keyword,
-                                      @RequestParam(defaultValue = "latest") String sortType){
-        try{
-            List<PostShowDto> postShowDtoList = postService.findPost(page,keyword,sortType);
-            return ResponseEntity.status(HttpStatus.OK).body(postShowDtoList);
-        }catch (InvalidOperationException invalidOperationException){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(invalidOperationException);
-        }
-
+    @GetMapping("/search")
+    public ResponseEntity<?> searchPost(@RequestParam int page,
+                                        @RequestParam(required = true) String keyword,
+                                        @RequestParam(defaultValue = "latest") String sortType){
+        List<PostShowDto> postShowDtoList = postService.searchPost(page,keyword,sortType);
+        return ResponseEntity.status(HttpStatus.OK).body(postShowDtoList);
     }
 }

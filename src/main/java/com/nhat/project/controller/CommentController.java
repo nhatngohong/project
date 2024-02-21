@@ -31,13 +31,8 @@ public class CommentController {
                                    @RequestBody CommentDto commentDto,
                                    @PathVariable int id) {
         String username = authentication.getName();
-        try{
-            CommentDto comment = commentService.reply(commentDto.getContent(), userService.findByUsername(username), id);
-            return ResponseEntity.status(HttpStatus.OK).body(comment);
-        }
-        catch (PostNotFoundException postNotFoundException){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(postNotFoundException);
-        }
+        CommentDto comment = commentService.reply(commentDto.getContent(), userService.findByUsername(username), id);
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(Authentication authentication, @PathVariable int id){
@@ -45,16 +40,8 @@ public class CommentController {
         String username = authentication.getName();
         User user = userService.findByUsername(username);
         Post post = comment.getPost();
-        try{
-            CommentDto commentDto = commentService.delete(id, user);
-            return ResponseEntity.status(HttpStatus.OK).body(commentDto);
-        }
-        catch (NotOwnerException noe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
-        }
-        catch (CommentNotFoundException commentNotFoundException){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(commentNotFoundException);
-        }
+        CommentDto commentDto = commentService.delete(id, user);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDto);
     }
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> edit(Authentication authentication,
@@ -65,16 +52,8 @@ public class CommentController {
         String username = authentication.getName();
         User user = userService.findByUsername(username);
         Post post = comment.getPost();
-        try{
-            CommentDto commentDto = commentService.edit(id,user,content);
-            return ResponseEntity.status(HttpStatus.OK).body(commentDto);
-        }
-        catch (NotOwnerException noe){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(noe);
-        }
-        catch (CommentNotFoundException commentNotFoundException){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(commentNotFoundException);
-        }
+        CommentDto commentDto = commentService.edit(id,user,content);
+        return ResponseEntity.status(HttpStatus.OK).body(commentDto);
     }
     @PutMapping("/upvote/{id}")
     public ResponseEntity<?> upvoteComment(Authentication authentication,
@@ -83,15 +62,7 @@ public class CommentController {
         Comment comment = commentService.findById(id);
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-        try{
-            CommentUpvoteDto commentUpvoteDto = commentService.upvote(id,user,vote);
-            return ResponseEntity.status(HttpStatus.OK).body(commentUpvoteDto);
-        }
-        catch (InvalidOperationException nvoe){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(nvoe);
-        }
-        catch (CommentNotFoundException commentNotFoundException){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(commentNotFoundException);
-        }
+        CommentUpvoteDto commentUpvoteDto = commentService.upvote(id,user,vote);
+        return ResponseEntity.status(HttpStatus.OK).body(commentUpvoteDto);
     }
 }
