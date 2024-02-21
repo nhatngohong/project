@@ -14,10 +14,10 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Integer> {
     Comment findById(int id);
-    @Query(value = "SELECT c FROM Comment c WHERE c.post_id = :id ORDER BY c.upvote DESC", nativeQuery = true)
+    @Query("SELECT c FROM Comment c WHERE c.post.id = :id ORDER BY c.upvote DESC")
     List<Comment> findByPostSortByUpvote(@Param("id") int id, Pageable pageable);
-    @Query(value = "SELECT c FROM Comment c WHERE c.post_id = :id ORDER BY c.createDate DESC", nativeQuery = true)
+    @Query(value = "SELECT c FROM Comment c WHERE c.post.id = :id ORDER BY c.createDate DESC")
     List<Comment> findByPostSortByDate(@Param("id") int id, Pageable pageable);
-    @Query(value = "SELECT c FROM Comment c WHERE c.user_id = :id ORDER BY c.createDate DESC", nativeQuery = true)
+    @Query(value = "SELECT c FROM Comment c WHERE c.owner.id = :id ORDER BY c.createDate DESC")
     List<Comment> findByUser_id(@Param("id") int id, Pageable pageable);
 }

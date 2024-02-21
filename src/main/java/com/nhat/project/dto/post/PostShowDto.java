@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class PostShowDto {
     private String title;
     private String content;
+    private int upvote;
     private UserDto owner;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;

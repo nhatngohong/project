@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "comment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,7 +42,7 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @OneToMany(mappedBy = "comment_id")
+    @OneToMany(mappedBy = "comment")
     private List<UpvoteComment> upvotesComment;
 
     public CommentDto convertToDto(){

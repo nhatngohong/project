@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UpvotePostRepository extends JpaRepository<UpvotePost, UpvotePostId> {
-    @Query(value = "SELECT u FROM UpvotePost u WHERE u.user_id = :user_id AND u.post_id = :post_id",  nativeQuery = true)
+    @Query(value = "SELECT u FROM UpvotePost u WHERE u.owner.id = :user_id AND u.post.id = :post_id")
     UpvotePost findByUpvotePostId(@Param("user_id") int user_id,
-                                  @Param("post") int post);
+                                  @Param("post_id") int post);
 
 }

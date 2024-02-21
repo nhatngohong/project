@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Entity
-@Table(name = "posts")
+@Table(name = "post")
 
 @Data
 @NoArgsConstructor
@@ -44,7 +44,7 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @OneToMany(mappedBy = "post_id")
+    @OneToMany(mappedBy = "post")
     private List<UpvotePost> upvotesPost;
 
     public PostDto convertToDto(){

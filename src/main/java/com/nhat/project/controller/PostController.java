@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/post")
 public class PostController {
@@ -96,6 +98,20 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.OK).body(postDto);
         }catch (PostNotFoundException pnfe){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pnfe);
+        }catch (InvalidOperationException invalidOperationException){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(invalidOperationException);
         }
+    }
+    @GetMapping("/find")
+    public ResponseEntity<?> findPost(@RequestParam int page,
+                                      @RequestParam(required = true) String keyword,
+                                      @RequestParam(defaultValue = "latest") String sortType){
+        try{
+            List<PostShowDto> postShowDtoList = postService.findPost(page,keyword,sortType);
+            return ResponseEntity.status(HttpStatus.OK).body(postShowDtoList);
+        }catch (InvalidOperationException invalidOperationException){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(invalidOperationException);
+        }
+
     }
 }

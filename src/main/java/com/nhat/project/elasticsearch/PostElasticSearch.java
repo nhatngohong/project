@@ -13,8 +13,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class PostElasticSearch {
     @Id
     private String id;
+
     private String title;
+
     private String content;
-
-
 }

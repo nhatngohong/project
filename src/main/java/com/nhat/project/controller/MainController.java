@@ -3,6 +3,9 @@ package com.nhat.project.controller;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.nhat.project.dto.post.PostDto;
 import com.nhat.project.dto.post.PostShowDto;
+import com.nhat.project.dto.user.UserCreateDto;
+import com.nhat.project.entity.User;
+import com.nhat.project.exception.UsernameAlreadyTaken;
 import com.nhat.project.service.CommentService;
 import com.nhat.project.service.PostService;
 import com.nhat.project.service.UserService;
@@ -21,24 +24,25 @@ public class MainController {
     private PostService postService;
     @Autowired
     private CommentService commentService;
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-    @GetMapping("/")
+    @GetMapping("")
+    public String greet(){
+        return "hi";
+    }
+    @GetMapping("/home")
     public String home(){
         return "home";
     }
-    @GetMapping("/login")
-    public String login(){
-        return "login";
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody UserCreateDto userCreateDto){
+        try{
+            userService.register(userCreateDto);
+            return ResponseEntity.status(HttpStatus.OK).body(userCreateDto);
+        }
+        catch (UsernameAlreadyTaken usernameAlreadyTaken){
+            return ResponseEntity.status(HttpStatus.OK).body(usernameAlreadyTaken);
+        }
     }
-//    @GetMapping("/register")
-//    public ResponseEntity<?> register(@RequestBody UserDto userDto){
-//
-//
-//
-//    }
-
-    @GetMapping
+    @GetMapping("/home/posts")
     public ResponseEntity<?> showPost(@RequestParam int page){
         List<PostShowDto> postDtoList = postService.showPost(page);
         return ResponseEntity.status(HttpStatus.OK).body(postDtoList);

@@ -11,18 +11,18 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpvoteCommentId implements Serializable {
-    private Integer user_id;
-    private Integer comment_id;
+    private Integer owner;
+    private Integer comment;
     @Override
     public int hashCode(){
-        return Objects.hash(user_id,comment_id);
+        return Objects.hash(owner, comment);
     }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpvoteCommentId upvoteCommentId = (UpvoteCommentId) o;
-        return user_id.equals(upvoteCommentId.user_id) &&
-                comment_id.equals(upvoteCommentId.comment_id);
+        return owner.equals(upvoteCommentId.owner) &&
+                comment.equals(upvoteCommentId.comment);
     }
 }

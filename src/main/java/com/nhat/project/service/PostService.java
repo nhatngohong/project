@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PostService {
@@ -101,14 +102,15 @@ public class PostService {
 
         if (post == null) throw new PostNotFoundException("Post not found");
 
-        if (sortType != "latest" && sortType !="upvote") throw new InvalidOperationException("Invalid sort type");
+        if ((!Objects.equals(sortType, "latest")) && (!Objects.equals(sortType, "upvote"))) throw new InvalidOperationException("Invalid sort type");
 
         Pageable pageable = PageRequest.of(page,15);
         List<Comment> comments;
-        if (sortType == "latest") comments = commentRepository.findByPostSortByDate(id,pageable);
+        if (sortType.equals("latest")) comments = commentRepository.findByPostSortByDate(id,pageable);
         else comments = commentRepository.findByPostSortByUpvote(id,pageable);
         List<CommentDto> commentDtos = new ArrayList<>();
         for (Comment comment:comments){
+            System.out.println(comment.getContent());
             commentDtos.add(comment.convertToDto());
         }
 
@@ -127,7 +129,21 @@ public class PostService {
         List<PostShowDto> postShowDtos = new ArrayList<PostShowDto>();
         List<Post> posts = postRepository.findAllByDate(pageable);
         for (Post post:posts){
-            postShowDtos.add(new PostShowDto(post.getTitle(),post.getContent(),post.getOwner().convertToDto(),post.getCreateDate(),post.getUpdateDate()));
+            postShowDtos.add(new PostShowDto(post.getTitle(),post.getContent(),post.getUpvote(),post.getOwner().convertToDto(),post.getCreateDate(),post.getUpdateDate()));
+        }
+        return postShowDtos;
+    }
+    public List<PostShowDto> findPost(int page,String keyword,String sortType) throws InvalidOperationException{
+
+        if (!Objects.equals(sortType, "latest") && !Objects.equals(sortType, "upvote")) throw new InvalidOperationException("Invalid sort type");
+
+        Pageable pageable = PageRequest.of(page,5);
+        List<PostShowDto> postShowDtos = new ArrayList<PostShowDto>();
+        List<Post> posts;
+        if (sortType == "latest") posts = postRepository.searchPostSortByDate(keyword,pageable);
+        else posts = postRepository.searchPostSortByUpvote(keyword,pageable);
+        for (Post post:posts){
+            postShowDtos.add(new PostShowDto(post.getTitle(),post.getContent(),post.getUpvote(),post.getOwner().convertToDto(),post.getCreateDate(),post.getUpdateDate()));
         }
         return postShowDtos;
     }

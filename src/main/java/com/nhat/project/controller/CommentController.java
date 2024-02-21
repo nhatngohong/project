@@ -76,7 +76,7 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(commentNotFoundException);
         }
     }
-    @PutMapping("/upvote-comment/{id}")
+    @PutMapping("/upvote/{id}")
     public ResponseEntity<?> upvoteComment(Authentication authentication,
                                            @PathVariable int id,
                                            @RequestParam int vote){

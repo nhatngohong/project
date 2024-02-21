@@ -16,12 +16,12 @@ public class UpvotePost {
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user_id;
+    private User owner;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post_id;
+    private Post post;
 
     private int vote;
 }

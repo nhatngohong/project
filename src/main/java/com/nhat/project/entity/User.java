@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,20 +33,13 @@ public class User {
 
     @OneToMany(mappedBy = "owner",cascade = CascadeType.ALL)
     private List<Comment> comments;
-
+    @CreationTimestamp
     private LocalDateTime createDate;
-
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "owner")
     private List<UpvoteComment> upvotesComment;
-
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "owner")
     private List<UpvotePost> upvotesPost;
-
     public UserDto convertToDto(){
         return new UserDto(this.id,this.getUsername(),this.getContribution(),this.getCreateDate());
     }
-    public OwnerDto convertToOwner(){
-        return new OwnerDto(this.getId(), this.getUsername());
-    }
-
 }

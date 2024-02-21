@@ -17,12 +17,12 @@ public class UpvoteComment {
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user_id;
+    private User owner;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "comment_id")
-    private Comment comment_id;
+    private Comment comment;
 
     private int vote;
 
