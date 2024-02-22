@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
+@RestControllerAdvice
 public class ApiExceptionHandler {
 
     private Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
@@ -31,7 +31,7 @@ public class ApiExceptionHandler {
         return new ErrorMessage(400,e.getMessage());
     }
     @ExceptionHandler({CommentNotFoundException.class, PostNotFoundException.class, UserNotFoundException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorMessage notFound(Exception e){
         logger.error(e.toString());
         return new ErrorMessage(404,e.getMessage());

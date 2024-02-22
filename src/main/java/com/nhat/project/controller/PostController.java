@@ -65,7 +65,7 @@ public class PostController {
         PostUpvoteDto postUpvoteDto = postService.upvote(id,user,vote);
         return ResponseEntity.status(HttpStatus.OK).body(postUpvoteDto);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/view/{id}")
     public ResponseEntity<?> getPost(@PathVariable int id,
                                      @RequestParam int page,
                                      @RequestParam(defaultValue = "latest") String sortType){
