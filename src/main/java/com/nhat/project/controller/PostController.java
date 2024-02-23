@@ -72,7 +72,7 @@ public class PostController {
         PostDto postDto = postService.getPost(id,page,sortType);
         return ResponseEntity.status(HttpStatus.OK).body(postDto);
     }
-    @GetMapping("/search")
+    @GetMapping("/view/search")
     public ResponseEntity<?> searchPost(@RequestParam int page,
                                         @RequestParam(required = true) String keyword,
                                         @RequestParam(defaultValue = "latest") String sortType){

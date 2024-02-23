@@ -86,4 +86,10 @@ Upvote a post which has id = 5
 ```
 curl -X PUT 'http://localhost:8080/comment/upvote/1?vote=-1' -H "Authorization: Bearer {YOUR_TOKEN_FROM_LOGIN}"
 ```
-Downvote a comment which has is = 1
+Downvote a comment which has id = 1
+
+**Example for search post by keyword**
+```
+$ curl "http://localhost:8080/post/view/search?page=0&keyword=ar&sortType=latest"
+```
+Search post that contains keyword "ar"
