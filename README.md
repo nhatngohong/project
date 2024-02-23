@@ -90,6 +90,6 @@ Downvote a comment which has id = 1
 
 **Example for search post by keyword**
 ```
-$ curl "http://localhost:8080/post/view/search?page=0&keyword=ar&sortType=latest"
+curl "http://localhost:8080/post/view/search?page=0&keyword=ar&sortType=latest"
 ```
 Search post that contains keyword "ar"
